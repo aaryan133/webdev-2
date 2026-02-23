@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Event Dashboard</title>
+    <style>
+        :root {
+            --primary-teal: #d3b279;
+            --bg-teal: #93e5aa;
+            --card-white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-teal);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: max-content;
+        }
+
+        h1 {
+            color: white;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            width: 100%;
+            height: 100%;
+            max-width: 2100px;
+            max-height: 2200px;
+        }
+
+        .card {
+            background: var(--card-white);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h3 { margin-top: 0; color: #444; }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.9rem; color: #433737; margin-bottom: 5px; }
+        
+        input, select, textarea {
+            width: 100%;
+            height: 140px;
+            padding: 10px;
+            border: 3px solid #905252;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        button.main-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-teal);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .panel-header-btns {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .secondary-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--primary-teal);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        #event-display-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .event-item {
+            background: #f1f7f7;
+            border-radius: 10px;
+            padding: 15px;
+            position: relative;
+            border-left: 5px solid var(--primary-teal);
+        }
+
+        .delete-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #ff5e5e;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .category-tag {
+            background: #34495e;
+            color: rgb(206, 135, 135);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            display: inline-block;
+            margin: 5px 0;
+        }
+
+        .event-date { font-size: 0.8rem; color: #777; }
+        .event-desc { font-size: 0.9rem; color: #555; margin-top: 8px; }
+
+        @media (max-width: 800px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Smart Event Dashboard</h1>
+
+    <div class="dashboard-grid">
+        <div class="card">
+            <h3>Add New Event</h3>
+            <div class="form-group">
+                <label>Event Title:</label>
+                <input type="text" id="title">
+            </div>
+            <div class="form-group">
+                <label>Event Date:</label>
+                <input type="date" id="date">
+            </div>
+            <div class="form-group">
+                <label>Category:</label>
+                <select id="category">
+                    <option value="Conference">Conference</option>
+                    <option value="Workshop">Workshop</option>
+                    <option value="Meeting">Meeting</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <textarea id="desc" rows="3"></textarea>
+            </div>
+            <button class="main-btn" onclick="addEvent()">Add Event</button>
+        </div>
+
+        <div class="card">
+            <h3>My Events</h3>
+            <div class="panel-header-btns">
+                <button class="secondary-btn" onclick="clearAll()">Clear All Events</button>
+                <button class="secondary-btn" onclick="addSample()">Add Sample Events</button>
+            </div>
+            <div id="event-display-list"></div>
+        </div>
+    </div>
+
+    <script>
+        const eventList = document.getElementById('event-display-list');
+
+        function addEvent(titleVal, dateVal, catVal, descVal) {
+            const title = titleVal || document.getElementById('title').value;
+            const date = dateVal || document.getElementById('date').value;
+            const category = catVal || document.getElementById('category').value;
+            const desc = descVal || document.getElementById('desc').value;
+
+            if (!title || !date) return;
+
+            const item = document.createElement('div');
+            item.className = 'event-item';
+            item.innerHTML = `
+                <span class="delete-icon" onclick="this.parentElement.remove()">✖</span>
+                <h4 style="margin:0">${title}</h4>
+                <div class="event-date">${date}</div>
+                <div class="category-tag">${category}</div>
+                <div class="event-desc">${desc}</div>
+            `;
+
+            eventList.appendChild(item);
+
+            if(!titleVal) {
+                document.getElementById('title').value = '';
+                document.getElementById('date').value = '';
+                document.getElementById('desc').value = '';
+            }
+        }
+
+        function clearAll() {
+            eventList.innerHTML = '';
+        }
+
+        function addSample() {
+            addEvent("my event", "2026-02-20", "Conference", "what i say");
+        }
+
+    </script>
+</body>
+</html>
